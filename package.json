@@ -1,0 +1,26 @@
+{
+    "name": "ts-neural-network",
+    "version": "1.0.0",
+    "description": "TypeScript Neural Network implementation",
+    "main": "main.js",
+    "repository": "git@github.com:NachoBrito/ts-neural-network.git",
+    "author": "Nacho Brito <soynachobrito@gmail.com>",
+    "license": "MIT",
+    "private": true,
+    "dependencies": {
+        "@types/node": "^18.15.12",
+        "typescript": "^5.0.4"
+    },
+    "scripts": {
+        "build": "tsc",
+        "start": "node ./build/main.js",
+        "dev": "ts-node ./src/main.ts",
+        "test": "jest"
+    },
+    "devDependencies": {
+        "@jest/globals": "^29.5.0",
+        "jest": "^29.5.0",
+        "ts-jest": "^29.1.0",
+        "ts-node": "^10.9.1"
+    }
+}
