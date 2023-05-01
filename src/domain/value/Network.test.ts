@@ -13,10 +13,7 @@ describe('Network entity', () => {
         for (let i = 0; i < layerSizes.length; i++) {
             expect(network.layers[i].length).toBe(layerSizes[i]);
             for (let node of network.layers[i]) {
-                if (i == 0) {
-                    let ones = Array.from({ length: network.layers[i].length }, () => 1);
-                    expect(node.weights).toEqual(ones);
-                } else {
+                if (i > 0) {
                     expect(node.weights.length).toBe(previousSize);
                 }
             }
@@ -95,9 +92,10 @@ describe('Network entity', () => {
         const layerSizes = [3, 3, 2, 5, 1];
         const network = Network.initWithRandomWeights(layerSizes)
         const layerIndex = 0, nodeIndex = 0, weightIndex = 1;
-
+        const input = [1, 2, 3];
+        network.calculate(input);
         const derivative = network.calculateDerivativeOfInputRespectWeight(layerIndex, nodeIndex, weightIndex);
-        expect(derivative).toBe(1);
+        expect(derivative).toBe(input[weightIndex]);
     })
 
     test('Derivative of input respect of weight validates input', () => {

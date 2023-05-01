@@ -28,9 +28,9 @@ describe("NetworkTunner class", () => {
         const learningRate = new LearningRate(.5, .5);
         const tunner = new NetworkTunner(network, learningRate);
 
-        tunner.addBias(1, 1, 2);
+        tunner.addGradientComponentBias(1, 1, 2);
         expect(tunner.deltas[1][1].bias).toBe(2);
-        tunner.addBias(1, 1, 3);
+        tunner.addGradientComponentBias(1, 1, 3);
         expect(tunner.deltas[1][1].bias).toBe(5);
     })
 
@@ -39,9 +39,9 @@ describe("NetworkTunner class", () => {
         const learningRate = new LearningRate(.5, .5);
         const tunner = new NetworkTunner(network, learningRate);
 
-        tunner.addWeight(1, 1, 0, 2);
+        tunner.addGradientComponentWeight(1, 1, 0, 2);
         expect(tunner.deltas[1][1].weights[0]).toBe(2);
-        tunner.addWeight(1, 1, 0, 3);
+        tunner.addGradientComponentWeight(1, 1, 0, 3);
         expect(tunner.deltas[1][1].weights[0]).toBe(5);
     })
 
@@ -55,20 +55,20 @@ describe("NetworkTunner class", () => {
         const learningRate = new LearningRate(.5, .5);
         const tunner = new NetworkTunner(network, learningRate);
 
-        tunner.addBias(0, 0, 1);
-        tunner.addBias(0, 1, 2);
-        tunner.addBias(1, 0, 3);
-        tunner.addBias(1, 1, 4);
+        tunner.addGradientComponentBias(0, 0, 1);
+        tunner.addGradientComponentBias(0, 1, 2);
+        tunner.addGradientComponentBias(1, 0, 3);
+        tunner.addGradientComponentBias(1, 1, 4);
 
-        tunner.addWeight(0, 0, 0, 1);
-        tunner.addWeight(0, 0, 1, 2);
-        tunner.addWeight(0, 1, 0, 3);
-        tunner.addWeight(0, 1, 1, 4);
+        tunner.addGradientComponentWeight(0, 0, 0, 1);
+        tunner.addGradientComponentWeight(0, 0, 1, 2);
+        tunner.addGradientComponentWeight(0, 1, 0, 3);
+        tunner.addGradientComponentWeight(0, 1, 1, 4);
 
-        tunner.addWeight(1, 0, 0, 5);
-        tunner.addWeight(1, 0, 1, 6);
-        tunner.addWeight(1, 1, 0, 7);
-        tunner.addWeight(1, 1, 1, 8);
+        tunner.addGradientComponentWeight(1, 0, 0, 5);
+        tunner.addGradientComponentWeight(1, 0, 1, 6);
+        tunner.addGradientComponentWeight(1, 1, 0, 7);
+        tunner.addGradientComponentWeight(1, 1, 1, 8);
 
         tunner.apply(network);
 

@@ -4,6 +4,9 @@ import SigmoidActivationFunction from "../service/activation/SigmoidActivationFu
 import Node from "./Node";
 
 export default class Network {
+
+    private _input: number[] = [];
+
     constructor(
         readonly layers: Node[][],
         readonly activationFunction: ActivationFunction) { }
@@ -23,7 +26,7 @@ export default class Network {
             let layerSize = layerSizes[i];
             let weightsSize = i == 0 ? layerSize : layerSizes[i - 1];
             for (let j = 0; j < layerSize; j++) {
-                let weights = Array.from({ length: weightsSize }, () => i == 0 ? 1 : Math.random());
+                let weights = Array.from({ length: weightsSize }, () => Math.random());
                 layers[i][j] = new Node(i, j, 0, weights, activationFunction);
             }
         }
@@ -37,6 +40,8 @@ export default class Network {
      * @returns result number[]
      */
     public calculate(input: number[]): number[] {
+        this._input = Object.assign([], input);
+
         if (input.length !== this.layers[0].length) {
             throw (`Input size (${input.length}) doesn't match first layer size (${this.layers[0].length})`);
         }
@@ -69,11 +74,11 @@ export default class Network {
      */
     calculateDerivativeOfInputRespectWeight(layerIndex: number, nodeIndex: number, prevNodeIndex: number): number {
         this.validateNodeIndices(layerIndex, nodeIndex);
-        
+
         if (layerIndex == 0) {
-            return 1.0;
+            return this._input[prevNodeIndex];
         }
-        
+
         if (prevNodeIndex < 0 || prevNodeIndex >= this.layers[layerIndex - 1].length) {
             throw ("Invalid previous node index")
         }

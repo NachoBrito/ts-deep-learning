@@ -16,11 +16,11 @@ describe("Trainer class", () => {
         global.console = require('console');
 
         const network = Network.initWithRandomWeights([1, 1]);
-        const epochs = 100;
-        const batches = 5;
+        const epochs = 4;
+        const batches = 1;
         const output = new CliOutput();
         const cost = new QuadraticCostfunction();
-        const learningRate = new LearningRate(.1, .1);
+        const learningRate = new LearningRate(.2, .2);
         const trainDataset: TrainDataItem[] = [];
         for (let i = 1; i < 1001; i++) {
             trainDataset.push(new TrainDataItem([i], [-1 * i]));

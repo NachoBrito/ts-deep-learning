@@ -38,11 +38,12 @@ export default class BackPropagation {
     }
 
     private calculateForNode(node: Node, tunner: NetworkTunner) {
-        const actualResult = node.activation;
-        const expectedResult = this.expectedResult[node.index];
-        this._totalCost += this.costFunction.calculate(actualResult, expectedResult);
 
         if (node.layer == this.network.layers.length - 1) {
+            const actualResult = node.activation;
+            const expectedResult = this.expectedResult[node.index];
+            this._totalCost += this.costFunction.calculate(actualResult, expectedResult);
+
             const costRespectActivation = this.costFunction.calculateFirstDerivative(node.activation, expectedResult);
             this.addPartialResult(node.layer, node.index, costRespectActivation);
         }
@@ -51,12 +52,12 @@ export default class BackPropagation {
         const activityRespectZ = this.network.activationFunction.calculateFirstDerivative(node.zValue);
         const costRespectActivity = this._partialResults[node.layer][node.index];
         const costRespectBias = costRespectActivity * activityRespectZ * zRespectBias;
-        tunner.addBias(node.layer, node.index, costRespectBias);
+        tunner.addGradientComponentBias(node.layer, node.index, costRespectBias);
 
         for (let w = 0; w < node.weights.length; w++) {
             const zRespectWeight = this.network.calculateDerivativeOfInputRespectWeight(node.layer, node.index, w);
             const costRespectWeight = costRespectActivity * activityRespectZ * zRespectWeight;
-            tunner.addWeight(node.layer, node.index, w, costRespectWeight);
+            tunner.addGradientComponentWeight(node.layer, node.index, w, costRespectWeight);
             if (node.layer > 0) {
                 const zRespectPreviousActivation = this.network.calculateDerivativeOfInputRespectPrevActivation(node.layer, node.index, w);
                 const costRespectPreviousActivation = costRespectActivity * activityRespectZ * zRespectPreviousActivation;

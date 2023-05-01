@@ -56,9 +56,7 @@ export default class Trainer {
         const tunner = new NetworkTunner(this.config.network, this.config.learningRate);
         for (let i = 0; i < items.length; i++) {
             const item = items[i];
-
             const output = network.calculate(item.input);
-
             const backProp = new BackPropagation(network, item.expectedOutput, costFunction);
             backProp.calculate(tunner);
 
