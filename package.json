@@ -15,7 +15,8 @@
         "build": "tsc",
         "start": "node ./build/main.js",
         "dev": "ts-node ./src/main.ts",
-        "test": "jest"
+        "test": "jest",
+        "clear_jest": "jest --clearCache"
     },
     "devDependencies": {
         "@jest/globals": "^29.5.0",
