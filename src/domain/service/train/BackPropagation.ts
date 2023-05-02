@@ -1,13 +1,12 @@
 import Network from "../../value/Network";
 import Node from "../../value/Node";
 import CostFunction from "../cost/CostFunction";
-import QuadraticCostfunction from "../cost/QuadraticCostFunction";
 import NetworkTunner from "./NetworkTunner";
 
 export default class BackPropagation {
 
 
-    private readonly _partialResults: number[][];
+    private readonly _costRespectActivationCache: number[][];
     private _totalCost: number = 0;
     /**
      * 
@@ -16,13 +15,13 @@ export default class BackPropagation {
      * @param costFunction 
      */
     constructor(readonly network: Network, readonly expectedResult: number[], readonly costFunction: CostFunction) {
-        this._partialResults = [];
+        this._costRespectActivationCache = [];
         this.initPartialResults();
     }
 
     private initPartialResults() {
         for (let i = 0; i < this.network.layers.length; i++) {
-            this._partialResults[i] = new Array<number>(this.network.layers[i].length).fill(0);
+            this._costRespectActivationCache[i] = new Array<number>(this.network.layers[i].length).fill(0);
         }
     }
 
@@ -45,32 +44,32 @@ export default class BackPropagation {
             this._totalCost += this.costFunction.calculate(actualResult, expectedResult);
 
             const costRespectActivation = this.costFunction.calculateFirstDerivative(node.activation, expectedResult);
-            this.addPartialResult(node.layer, node.index, costRespectActivation);
+            this.saveCostRespectActivation(node.layer, node.index, costRespectActivation);
         }
 
         const zRespectBias = 1;
         const activityRespectZ = this.network.activationFunction.calculateFirstDerivative(node.zValue);
-        const costRespectActivity = this._partialResults[node.layer][node.index];
-        const costRespectBias = costRespectActivity * activityRespectZ * zRespectBias;
+        const costRespectActivation = this._costRespectActivationCache[node.layer][node.index];
+        const costRespectBias = costRespectActivation * activityRespectZ * zRespectBias;
         tunner.addGradientComponentBias(node.layer, node.index, costRespectBias);
 
         for (let w = 0; w < node.weights.length; w++) {
             const zRespectWeight = this.network.calculateDerivativeOfInputRespectWeight(node.layer, node.index, w);
-            const costRespectWeight = costRespectActivity * activityRespectZ * zRespectWeight;
+            const costRespectWeight = costRespectActivation * activityRespectZ * zRespectWeight;
             tunner.addGradientComponentWeight(node.layer, node.index, w, costRespectWeight);
             if (node.layer > 0) {
-                const zRespectPreviousActivation = this.network.calculateDerivativeOfInputRespectPrevActivation(node.layer, node.index, w);
-                const costRespectPreviousActivation = costRespectActivity * activityRespectZ * zRespectPreviousActivation;
-                this.addPartialResult(node.layer - 1, w, costRespectPreviousActivation);
+                const zRespectPreviousActivation = this.network.calculateDerivativeOfZRespectPrevActivation(node.layer, node.index, w);
+                const costRespectPreviousActivation = costRespectActivation * activityRespectZ * zRespectPreviousActivation;
+                this.saveCostRespectActivation(node.layer - 1, w, costRespectPreviousActivation);
             }
         }
     }
 
-    addPartialResult(layerIndex: number, nodeIndex: number, result: number): void {
-        this._partialResults[layerIndex][nodeIndex] += result;
+    saveCostRespectActivation(layerIndex: number, nodeIndex: number, result: number): void {
+        this._costRespectActivationCache[layerIndex][nodeIndex] += result;
     }
 
-    get partialResults(): number[][] { return Object.assign([], this._partialResults); }
+    get costRespectActivationCache(): number[][] { return Object.assign([], this._costRespectActivationCache); }
     get totalCost(): number { return this._totalCost; }
 
 

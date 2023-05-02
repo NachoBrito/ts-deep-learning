@@ -15,16 +15,14 @@ describe("Trainer class", () => {
         const jestConsole = console;
         global.console = require('console');
 
-        const network = Network.initWithRandomWeights([1, 1]);
-        const epochs = 4;
+        const network = Network.initWithRandomWeights([1, 5, 5, 5, 1], 1, 2, 1, 2);
+        const epochs = 100000;
         const batches = 1;
         const output = new CliOutput();
         const cost = new QuadraticCostfunction();
-        const learningRate = new LearningRate(.2, .2);
+        const learningRate = new LearningRate(1, 1);
         const trainDataset: TrainDataItem[] = [];
-        for (let i = 1; i < 1001; i++) {
-            trainDataset.push(new TrainDataItem([i], [-1 * i]));
-        }
+        trainDataset.push(new TrainDataItem([1], [-1]));
 
         const trainConfig = TrainConfig
             .builder(network, trainDataset)
@@ -41,9 +39,12 @@ describe("Trainer class", () => {
 
         expect(result.durationMs).toBeGreaterThanOrEqual(0);
         expect(result.epochResults.length).toBe(epochs);
+        let lastCost = 0;
         result.epochResults.forEach(result => {
+            expect(result.cost).not.toBe(lastCost);
             expect(result.cost).toBeGreaterThan(0);
             expect(result.duration).toBeGreaterThanOrEqual(0);
+            lastCost = result.cost;
         })
 
         global.console = jestConsole;

@@ -5,8 +5,12 @@ import Network from './Network';
 describe('Network entity', () => {
     test('Builds a network of given size', () => {
         const layerSizes = [2, 3, 2, 5, 1];
+        const weightMin = 4.0;
+        const weightMax = 5.0;
+        const biasMin = 3.0;
+        const biasMax = 6.0;
 
-        const network = Network.initWithRandomWeights(layerSizes)
+        const network = Network.initWithRandomWeights(layerSizes, weightMin, weightMax, biasMin, biasMax)
 
         expect(network.layers.length).toBe(layerSizes.length)
         let previousSize;
@@ -16,6 +20,12 @@ describe('Network entity', () => {
                 if (i > 0) {
                     expect(node.weights.length).toBe(previousSize);
                 }
+                expect(node.bias).toBeGreaterThanOrEqual(biasMin);
+                expect(node.bias).toBeLessThanOrEqual(biasMax);
+                node.weights.forEach(weight => {
+                    expect(weight).toBeGreaterThanOrEqual(weight);
+                    expect(weight).toBeLessThanOrEqual(weightMax);
+                });
             }
             previousSize = network.layers[i].length;
         }
@@ -69,10 +79,9 @@ describe('Network entity', () => {
         const layerIndex = 2, nodeIndex = 0, prevNodeIndex = 1;
 
         const node = network.layers[layerIndex][nodeIndex];
-        const prevNode = network.layers[layerIndex - 1][nodeIndex];
 
-        const derivative = network.calculateDerivativeOfInputRespectPrevActivation(layerIndex, nodeIndex, prevNodeIndex);
-        expect(derivative).toBe(prevNode.weights[prevNodeIndex]);
+        const derivative = network.calculateDerivativeOfZRespectPrevActivation(layerIndex, nodeIndex, prevNodeIndex);
+        expect(derivative).toBe(node.weights[prevNodeIndex]);
     })
 
     test('Returns derivative of input respect of weight', () => {

@@ -15,8 +15,7 @@ export default class Trainer {
 
         let lastCost = 0;
         for (let epoch = 0; epoch < this.config.epochs; epoch++) {
-            this.config.output.write(`Starting epoch #${epoch}`)
-            const epochResult = this.executeEpoch();
+            const epochResult = this.executeEpoch(epoch);
 
             this.outputCostProgress(result, epochResult, lastCost);
             lastCost = epochResult.cost;
@@ -34,12 +33,12 @@ export default class Trainer {
             const diff = Math.round(10000.0 * (epochResult.cost - lastCost) / lastCost) / 100;
             diffTxt = ` (${diff}%)`;
         }
-        this.config.output.write(`Epoch total cost: ${epochResult.cost}${diffTxt}`);
+        this.config.output.write(`\rEpoch #${epochResult.epochNumber} total cost: ${epochResult.cost}${diffTxt}`);
     }
 
-    private executeEpoch(): TrainEpochResult {
+    private executeEpoch(epoch: number): TrainEpochResult {
         let t0 = Date.now();
-        const result = new TrainEpochResult();
+        const result = new TrainEpochResult(epoch);
         const batches = this.config.batches;
         for (let i = 0; i < batches.length; i++) {
             //this.config.output.write(`\t>Starting batch #${i}`)

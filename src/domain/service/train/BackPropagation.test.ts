@@ -12,7 +12,7 @@ describe("BackPropagation class", () => {
         const costFunction = new QuadraticCostfunction();
         const backProp = new BackPropagation(network, expectedResults, costFunction);
 
-        expect(backProp.partialResults).toEqual([[0, 0, 0], [0, 0, 0, 0], [0]]);
+        expect(backProp.costRespectActivationCache).toEqual([[0, 0, 0], [0, 0, 0, 0], [0]]);
     });
 
     test("Partial results setting", () => {
@@ -21,11 +21,11 @@ describe("BackPropagation class", () => {
         const costFunction = new QuadraticCostfunction();
         const backProp = new BackPropagation(network, expectedResults, costFunction);
 
-        expect(backProp.partialResults[1][2]).toBe(0);
-        backProp.addPartialResult(1, 2, 3);
-        expect(backProp.partialResults[1][2]).toBe(3);
-        backProp.addPartialResult(1, 2, 2);
-        expect(backProp.partialResults[1][2]).toBe(5);
+        expect(backProp.costRespectActivationCache[1][2]).toBe(0);
+        backProp.saveCostRespectActivation(1, 2, 3);
+        expect(backProp.costRespectActivationCache[1][2]).toBe(3);
+        backProp.saveCostRespectActivation(1, 2, 2);
+        expect(backProp.costRespectActivationCache[1][2]).toBe(5);
     });
 
 });
