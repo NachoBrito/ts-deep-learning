@@ -15,10 +15,18 @@ export default class Trainer {
 
         let lastCost = 0;
         for (let epoch = 0; epoch < this.config.epochs; epoch++) {
+
             const epochResult = this.executeEpoch(epoch);
 
-            this.outputCostProgress(result, epochResult, lastCost);
+            epochResult.calculateGain(lastCost);
+            result.epochResults.push(epochResult);
+            this.config.output.write(`\rEpoch #${epochResult.epochNumber} total cost: ${epochResult.cost} (${epochResult.costGainPercent}%)`);
             lastCost = epochResult.cost;
+
+            if (Math.abs(epochResult.costGain) < this.config.gainThreshold) {
+                this.config.output.write(`\nReached cost gain threshold. Interrupting.`);
+                break;
+            }
         }
         let t1 = Date.now();
 
@@ -26,22 +34,12 @@ export default class Trainer {
         return result;
     }
 
-    private outputCostProgress(result: TrainResult, epochResult: TrainEpochResult, lastCost: number) {
-        result.epochResults.push(epochResult);
-        let diffTxt = "";
-        if (lastCost > 0) {
-            const diff = Math.round(10000.0 * (epochResult.cost - lastCost) / lastCost) / 100;
-            diffTxt = ` (${diff}%)`;
-        }
-        this.config.output.write(`\rEpoch #${epochResult.epochNumber} total cost: ${epochResult.cost}${diffTxt}`);
-    }
 
     private executeEpoch(epoch: number): TrainEpochResult {
         let t0 = Date.now();
         const result = new TrainEpochResult(epoch);
         const batches = this.config.batches;
         for (let i = 0; i < batches.length; i++) {
-            //this.config.output.write(`\t>Starting batch #${i}`)
             this.executeBatch(batches[i], result);
         }
         let t1 = Date.now();

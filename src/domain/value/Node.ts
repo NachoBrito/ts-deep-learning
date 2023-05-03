@@ -20,7 +20,7 @@ export default class Node {
     }
 
     private calculateZValue(input: number[]): number {
-        let sum = this.bias
+        let sum = -1 * this.bias
         for (let i = 0; i < input.length; i++) {
             sum += this.weights[i] * input[i];
         }

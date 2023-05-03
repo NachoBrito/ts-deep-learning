@@ -15,6 +15,7 @@ export default abstract class TrainConfig {
     abstract get network(): Network;
     abstract get trainDataset(): TrainDataItem[];
     abstract get batches(): TrainDataItem[][];
+    abstract get gainThreshold(): number;
 
     static builder(network: Network, trainDataSet: TrainDataItem[]) { return new TrainConfigBuilder(network, trainDataSet); }
 }
@@ -28,7 +29,8 @@ class TrainConfigImpl extends TrainConfig {
         public _batchCount: number,
         public _costFunction: CostFunction,
         public _learningRate: LearningRate,
-        public _output: Output,) { super(); }
+        public _output: Output,
+        public _gainThreshold: number) { super(); }
 
 
     get batches(): TrainDataItem[][] {
@@ -46,6 +48,7 @@ class TrainConfigImpl extends TrainConfig {
     get costFunction(): CostFunction { return this._costFunction; }
     get learningRate(): LearningRate { return this._learningRate; }
     get output(): Output { return this._output; }
+    get gainThreshold(): number { return this._gainThreshold; }
 
 }
 
@@ -56,6 +59,7 @@ export class TrainConfigBuilder {
     private _defaultCostFunction: CostFunction = new QuadraticCostfunction();
     private _defaultLeraningRate: LearningRate = new LearningRate(.5, .5);
     private _defaultOutput: Output = new NullOutput();
+    private _defaultGainThreshold: number = .00001;
 
     constructor(network: Network, trainDataSet: TrainDataItem[]) {
         this._config = new TrainConfigImpl(
@@ -65,7 +69,8 @@ export class TrainConfigBuilder {
             this._defaultBatchCount,
             this._defaultCostFunction,
             this._defaultLeraningRate,
-            this._defaultOutput);
+            this._defaultOutput,
+            this._defaultGainThreshold);
     }
 
     build(): TrainConfig {
@@ -104,4 +109,8 @@ export class TrainConfigBuilder {
         return this;
     }
 
+    withGainThreshold(gainThreshold: number) {
+        this._config._gainThreshold = gainThreshold;
+        return this;
+    }
 }
