@@ -1,7 +1,7 @@
-import TrainConfig from "../../value/TrainConfig";
-import TrainEpochResult from "../../value/TrainEpochResult";
-import TrainResult from "../../value/TrainResult";
-import TrainDataItem from "../../value/TrainDataItem";
+import TrainConfig from "../../value/train/TrainConfig";
+import { TrainDataItem } from "../../value/train/TrainDataItem";
+import TrainEpochResult from "../../value/train/TrainEpochResult";
+import TrainResult from "../../value/train/TrainResult";
 import BackPropagation from "./BackPropagation";
 import NetworkTunner from "./NetworkTunner";
 
@@ -20,7 +20,7 @@ export default class Trainer {
 
             epochResult.calculateGain(lastCost);
             result.epochResults.push(epochResult);
-            this.config.output.write(`\rEpoch #${epochResult.epochNumber} total cost: ${epochResult.cost} (${epochResult.costGainPercent}%). Accuracy: ${epochResult.accuracy}\t`);
+            this.config.output.write(`\rEpoch #${epochResult.epochNumber} total cost: ${epochResult.cost} (${epochResult.costGainPercent}%). Accuracy: ${epochResult.accuracy}% \t\t\t\t`);
             lastCost = epochResult.cost;
 
             if (Math.abs(epochResult.costGain) < this.config.gainThreshold) {
@@ -28,6 +28,8 @@ export default class Trainer {
                 break;
             }
         }
+
+        this.config.output.write(`\nTraining complete. Average accuracy: ${result.averageAccuracy}%\n`)
         let t1 = Date.now();
 
         result.durationMs = t1 - t0;
@@ -56,7 +58,7 @@ export default class Trainer {
             const output = network.calculate(item.input);
             const backProp = new BackPropagation(network, item.expectedOutput, costFunction);
             backProp.calculate(tunner);
-            result.processOutput(output, item.expectedOutput);
+            result.processOutput(item.isCorrect(output));
             result.cost += backProp.totalCost;
         }
         tunner.apply(network);

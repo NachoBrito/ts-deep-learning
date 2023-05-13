@@ -2,7 +2,7 @@ import { describe, expect, test } from '@jest/globals';
 
 import Network from '../../value/Network';
 import NetworkTunner from './NetworkTunner';
-import LearningRate from '../../value/LearningRate';
+import LearningRate from '../../value/train/LearningRate';
 
 
 
@@ -56,7 +56,7 @@ describe("NetworkTunner class", () => {
                 weights[layerIndex][nodeIndex] = Object.assign([], node.weights);
                 bias[layerIndex][nodeIndex] = node.bias;
             })
-            
+
         })
         const learningRate = new LearningRate(.5, .5);
         const tunner = new NetworkTunner(network, learningRate);

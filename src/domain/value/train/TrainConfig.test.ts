@@ -1,9 +1,10 @@
 import { describe, expect, test } from '@jest/globals';
-import QuadraticCostfunction from '../service/cost/QuadraticCostFunction';
-import TrainConfig from './TrainConfig';
-import TrainDataItem from './TrainDataItem';
-import Network from './Network';
+import QuadraticCostfunction from '../../service/cost/QuadraticCostFunction';
+
+import Network from '../Network';
 import LearningRate from './LearningRate';
+import TrainConfig from './TrainConfig';
+import { ExactTrainDataItem } from './TrainDataItem';
 
 
 describe("Train Config", () => {
@@ -14,9 +15,9 @@ describe("Train Config", () => {
         const cost = new QuadraticCostfunction();
         const learningRate = new LearningRate(.5, .5);
         const trainDataItems = [
-            new TrainDataItem([1, 1], [2]),
-            new TrainDataItem([1, 2], [3]),
-            new TrainDataItem([1, 3], [4])
+            new ExactTrainDataItem([1, 1], [2]),
+            new ExactTrainDataItem([1, 2], [3]),
+            new ExactTrainDataItem([1, 3], [4])
         ];
 
         const trainConfig = TrainConfig
@@ -37,9 +38,9 @@ describe("Train Config", () => {
         const network = Network.initWithRandomWeights([2, 2, 1]);
         const batchCount = 4;
         const trainDataItems = [
-            new TrainDataItem([1, 1], [2]),
-            new TrainDataItem([1, 2], [3]),
-            new TrainDataItem([1, 3], [4])
+            new ExactTrainDataItem([1, 1], [2]),
+            new ExactTrainDataItem([1, 2], [3]),
+            new ExactTrainDataItem([1, 3], [4])
         ];
 
         expect(() => {

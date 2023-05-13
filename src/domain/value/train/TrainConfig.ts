@@ -1,10 +1,11 @@
-import { NullOutput } from "../../infrastructure/cli/NullOutput";
-import Output from "../service/Output";
-import CostFunction from "../service/cost/CostFunction";
-import QuadraticCostfunction from "../service/cost/QuadraticCostFunction";
+import { NullOutput } from "../../../infrastructure/cli/NullOutput";
+import Output from "../../service/Output";
+import CostFunction from "../../service/cost/CostFunction";
+import QuadraticCostfunction from "../../service/cost/QuadraticCostFunction";
 import LearningRate from "./LearningRate";
-import Network from "./Network";
-import TrainDataItem from "./TrainDataItem";
+import Network from "../Network";
+import { TrainDataItem } from "./TrainDataItem";
+
 
 export default abstract class TrainConfig {
     abstract get output(): Output;

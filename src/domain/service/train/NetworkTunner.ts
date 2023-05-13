@@ -1,4 +1,4 @@
-import LearningRate from "../../value/LearningRate";
+import LearningRate from "../../value/train/LearningRate";
 import Network from "../../value/Network";
 import Node from "../../value/Node";
 
