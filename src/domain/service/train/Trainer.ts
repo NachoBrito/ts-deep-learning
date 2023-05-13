@@ -59,7 +59,7 @@ export default class Trainer {
             const output = network.calculate(item.input);
             const backProp = new BackPropagation(network, item.expectedOutput, costFunction);
             backProp.calculate(tunner);
-            result.processOutput(item.isCorrect(network.formattedOutput));
+            result.countResult(item.isCorrect(network.processedOutput));
             result.cost += backProp.totalCost;
         }
         tunner.apply(network);

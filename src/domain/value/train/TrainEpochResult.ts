@@ -18,7 +18,7 @@ export default class TrainEpochResult {
         this.costGainPercent = Math.round(10000.0 * this.costGain / previousCost) / 100;
     }
 
-    processOutput(isCorrect: boolean) {
+    countResult(isCorrect: boolean) {
         this.totalPredictions++;
         if (isCorrect) {
             this.correctPredicitons++;

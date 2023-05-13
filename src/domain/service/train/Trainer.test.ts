@@ -15,7 +15,12 @@ describe("Trainer class", () => {
         const jestConsole = console;
         global.console = require('console');
 
-        const network = Network.initWithRandomWeights([2, 2], -1, 1, -1, 1);
+        const network = Network
+            .builder([2, 2])
+            .withWeightLimits(-1, 1)
+            .withBiasLimits(-1, 1)
+            .build();
+
         const epochs = 10000;
         const batches = 1;
         const output = new CliOutput();

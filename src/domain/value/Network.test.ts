@@ -10,7 +10,11 @@ describe('Network entity', () => {
         const biasMin = 3.0;
         const biasMax = 6.0;
 
-        const network = Network.initWithRandomWeights(layerSizes, weightMin, weightMax, biasMin, biasMax)
+        const network = Network
+            .builder(layerSizes)
+            .withWeightLimits(weightMin, weightMax)
+            .withBiasLimits(biasMin, biasMax)
+            .build();
 
         expect(network.layers.length).toBe(layerSizes.length)
         let previousSize;
@@ -33,7 +37,7 @@ describe('Network entity', () => {
 
     test('Calculate returns a result of the sime size as the last layer', () => {
         const layerSizes = [2, 3, 2, 5, 1];
-        const network = Network.initWithRandomWeights(layerSizes)
+        const network = Network.builder(layerSizes).build();
         const input = [0, 0];
         const result = network.calculate(input)
         expect(result.length).toBe(layerSizes[layerSizes.length - 1]);
@@ -41,7 +45,7 @@ describe('Network entity', () => {
 
     test('Fail if invalid input size', () => {
         const layerSizes = [3, 3, 2, 5, 1];
-        const network = Network.initWithRandomWeights(layerSizes)
+        const network = Network.builder(layerSizes).build();
         const input = [0, 0, 0, 4];
 
         expect(() => {
@@ -52,7 +56,7 @@ describe('Network entity', () => {
 
     test('At least one weight is >0 && < 1', () => {
         const layerSizes = [3, 3, 2, 5, 1];
-        const network = Network.initWithRandomWeights(layerSizes)
+        const network = Network.builder(layerSizes).build();
         let randomWeight = false;
         for (let layer of network.layers) {
             for (let node of layer) {
@@ -75,7 +79,7 @@ describe('Network entity', () => {
 
     test('Returns derivative of input respect of previous activation', () => {
         const layerSizes = [3, 3, 2, 5, 1];
-        const network = Network.initWithRandomWeights(layerSizes)
+        const network = Network.builder(layerSizes).build();
         const layerIndex = 2, nodeIndex = 0, prevNodeIndex = 1;
 
         const node = network.layers[layerIndex][nodeIndex];
@@ -86,7 +90,7 @@ describe('Network entity', () => {
 
     test('Returns derivative of input respect of weight', () => {
         const layerSizes = [3, 3, 2, 5, 1];
-        const network = Network.initWithRandomWeights(layerSizes)
+        const network = Network.builder(layerSizes).build();
         network.calculate([1, 2, 3])
         const layerIndex = 2, nodeIndex = 0, prevNodeIndex = 1;
 
@@ -99,7 +103,7 @@ describe('Network entity', () => {
 
     test('Derivative of input respect of weight for layer 0', () => {
         const layerSizes = [3, 3, 2, 5, 1];
-        const network = Network.initWithRandomWeights(layerSizes)
+        const network = Network.builder(layerSizes).build();
         const layerIndex = 0, nodeIndex = 0, weightIndex = 1;
         const input = [1, 2, 3];
         network.calculate(input);
@@ -109,7 +113,7 @@ describe('Network entity', () => {
 
     test('Derivative of input respect of weight validates input', () => {
         const layerSizes = [1, 1];
-        const network = Network.initWithRandomWeights(layerSizes)
+        const network = Network.builder(layerSizes).build();
 
         expect(() => {
             const derivative = network.calculateDerivativeOfInputRespectWeight(-1, 0, 0);

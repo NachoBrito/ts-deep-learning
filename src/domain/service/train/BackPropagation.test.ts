@@ -7,7 +7,7 @@ import QuadraticCostfunction from '../cost/QuadraticCostFunction';
 
 describe("BackPropagation class", () => {
     test("Partial results initialization", () => {
-        const network = Network.initWithRandomWeights([3, 4, 1]);
+        const network = Network.builder([3, 4, 1]).build();
         const expectedResults = [1];
         const costFunction = new QuadraticCostfunction();
         const backProp = new BackPropagation(network, expectedResults, costFunction);
@@ -16,7 +16,7 @@ describe("BackPropagation class", () => {
     });
 
     test("Partial results setting", () => {
-        const network = Network.initWithRandomWeights([3, 4, 1]);
+        const network = Network.builder([3, 4, 1]).build();
         const expectedResults = [1];
         const costFunction = new QuadraticCostfunction();
         const backProp = new BackPropagation(network, expectedResults, costFunction);

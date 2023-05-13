@@ -2,7 +2,7 @@
 import ActivationFunction from "../service/activation/ActivationFunction";
 import SigmoidActivationFunction from "../service/activation/SigmoidActivationFunction";
 import Node from "./Node";
-import { NoOpFormatter, OutputFormatter } from "./OutputFormatter";
+import { NoOpFormatter, OutputProcessor } from "./OutputFormatter";
 
 export default class Network {
 
@@ -12,34 +12,11 @@ export default class Network {
     constructor(
         readonly layers: Node[][],
         readonly activationFunction: ActivationFunction,
-        readonly outputFormatter: OutputFormatter) { }
+        readonly outputProcessor: OutputProcessor) { }
 
 
-    /**
-     * Creates a Neural Network initialized with random weights
-     * 
-     * @param layerSizes array with layer sizes   
-     * @param weightMin min vale for random weights 
-     * @param weightMax max value for random weights
-     * @param biasMin min value for random bias
-     * @param biasMax max value for random bias 
-     * @param activationFunction activation function (defaults to sigmoid)
-     * @returns Network
-     */
-    public static initWithRandomWeights(layerSizes: number[], weightMin: number = 0.0, weightMax: number = 1.0, biasMin: number = 0.0, biasMax: number = 1.0, activationFunction: ActivationFunction = new SigmoidActivationFunction(), outputFormatter: OutputFormatter = new NoOpFormatter()): Network {
-        let layers: Node[][] = []
-        for (let i = 0; i < layerSizes.length; i++) {
-            layers[i] = [];
-            let layerSize = layerSizes[i];
-            let weightsSize = i == 0 ? layerSize : layerSizes[i - 1];
-            for (let j = 0; j < layerSize; j++) {
-                let weights = Array.from({ length: weightsSize }, () => (Math.random() * (weightMax - weightMin) + weightMin));
-                let bias = Math.random() * (biasMax - biasMin) + biasMin;
-                layers[i][j] = new Node(i, j, bias, weights, activationFunction);
-            }
-        }
-
-        return new Network(layers, activationFunction, outputFormatter);
+    static builder(layerSizes: number[]): NetworkBuilder {
+        return new NetworkBuilder(layerSizes);
     }
 
     /**
@@ -70,7 +47,7 @@ export default class Network {
         return result;
     }
 
-    get formattedOutput(): number[] { return this.outputFormatter.format(this._output); }
+    get processedOutput(): number[] { return this.outputProcessor.format(this._output); }
     /**
      * The input of the node [nodeIndex] in layer [layerIndex] as a function of the
      * activation of the node [prevNodeIndex] of the previous layer is:
@@ -114,5 +91,55 @@ export default class Network {
         if (nodeIndex < 0 || nodeIndex >= this.layers[layerIndex].length) {
             throw ("Invalid node index");
         }
+    }
+}
+
+class NetworkBuilder {
+    private _weightMin: number = 0.0
+    private _weightMax: number = 1.0;
+    private _biasMin: number = 0.0;
+    private _biasMax: number = 1.0;
+    private _activationFunction: ActivationFunction = new SigmoidActivationFunction();
+    private _outputProcessor: OutputProcessor = new NoOpFormatter()
+
+    constructor(private layerSizes: number[]) { }
+
+    withWeightLimits(weightMin: number, weightMax: number): NetworkBuilder {
+        this._weightMax = weightMax;
+        this._weightMin = weightMin;
+        return this;
+    }
+
+    withBiasLimits(biasMin: number, biasMax: number): NetworkBuilder {
+        this._biasMax = biasMax;
+        this._biasMin = biasMin;
+        return this;
+    }
+
+    withActivationFunction(activationFunction: ActivationFunction): NetworkBuilder {
+        this._activationFunction = activationFunction;
+        return this;
+    }
+
+    withOutputProcessor(outputProcessor: OutputProcessor) {
+        this._outputProcessor = outputProcessor;
+        return this;
+    }
+
+
+    build(): Network {
+        let layers: Node[][] = []
+        for (let i = 0; i < this.layerSizes.length; i++) {
+            layers[i] = [];
+            let layerSize = this.layerSizes[i];
+            let weightsSize = i == 0 ? layerSize : this.layerSizes[i - 1];
+            for (let j = 0; j < layerSize; j++) {
+                let weights = Array.from({ length: weightsSize }, () => (Math.random() * (this._weightMax - this._weightMin) + this._weightMin));
+                let bias = Math.random() * (this._biasMax - this._biasMin) + this._biasMin;
+                layers[i][j] = new Node(i, j, bias, weights, this._activationFunction);
+            }
+        }
+
+        return new Network(layers, this._activationFunction, this._outputProcessor);
     }
 }

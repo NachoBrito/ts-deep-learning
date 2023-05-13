@@ -10,7 +10,7 @@ import TrainDataItem from './TrainDataItem';
 
 describe("Train Config", () => {
     test("batch generation", () => {
-        const network = Network.initWithRandomWeights([2, 2, 1]);
+        const network = Network.builder([2, 2, 1]).build();
         const epochs = 2;
         const batchCount = 2;
         const cost = new QuadraticCostfunction();
@@ -36,7 +36,7 @@ describe("Train Config", () => {
     });
 
     test("fail if batch count is ivalid", () => {
-        const network = Network.initWithRandomWeights([2, 2, 1]);
+        const network = Network.builder([2, 2, 1]).build();
         const batchCount = 4;
         const trainDataItems = [
             new TrainDataItem([1, 1], [2]),

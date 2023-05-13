@@ -8,7 +8,7 @@ import LearningRate from '../../value/train/LearningRate';
 
 describe("NetworkTunner class", () => {
     test("Constructor", () => {
-        const network = Network.initWithRandomWeights([1, 2, 3, 4, 5])
+        const network = Network.builder([1, 2, 3, 4, 5]).build();
         const learningRate = new LearningRate(.5, .5);
         const tunner = new NetworkTunner(network, learningRate);
         const deltas = tunner.deltas;
@@ -24,7 +24,7 @@ describe("NetworkTunner class", () => {
 
 
     test("addBias", () => {
-        const network = Network.initWithRandomWeights([1, 2, 3, 4, 5])
+        const network = Network.builder([1, 2, 3, 4, 5]).build();
         const learningRate = new LearningRate(.5, .5);
         const tunner = new NetworkTunner(network, learningRate);
 
@@ -35,7 +35,7 @@ describe("NetworkTunner class", () => {
     })
 
     test("addWeight", () => {
-        const network = Network.initWithRandomWeights([1, 2, 3, 4, 5])
+        const network = Network.builder([1, 2, 3, 4, 5]).build()
         const learningRate = new LearningRate(.5, .5);
         const tunner = new NetworkTunner(network, learningRate);
 
@@ -46,7 +46,7 @@ describe("NetworkTunner class", () => {
     })
 
     test("apply", () => {
-        const network = Network.initWithRandomWeights([2, 2])
+        const network = Network.builder([2, 2]).build();
         const weights: number[][][] = [];
         const bias: number[][] = [];
         network.layers.forEach((nodes, layerIndex) => {

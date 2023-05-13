@@ -8,9 +8,12 @@ import TrainConfig from "./domain/value/train/TrainConfig";
 import TrainDataItem from "./domain/value/train/TrainDataItem";
 import { CliOutput } from "./infrastructure/cli/CliOutput";
 
-const sigmoid = new SigmoidActivationFunction();
 const rounder = new OutputRounder();
-const network = Network.initWithRandomWeights([2, 2], -1, 1, -1, 1, sigmoid, rounder);
+const network = Network.builder([2, 2])
+    .withWeightLimits(-1, 1)
+    .withBiasLimits(-1, 1)
+    .withOutputProcessor(rounder)
+    .build();
 const epochs = 1000000;
 const batches = 1;
 const output = new CliOutput();
