@@ -15,6 +15,7 @@
         "build": "tsc",
         "start": "node ./build/main.js",
         "dev": "ts-node ./src/main.ts",
+        "mnist": "ts-node ./src/mnist.ts",
         "test": "jest",
         "clear_jest": "jest --clearCache"
     },
