@@ -1,5 +1,6 @@
 import TrainConfig from "../../value/train/TrainConfig";
-import { TrainDataItem } from "../../value/train/TrainDataItem";
+import TrainDataItem from "../../value/train/TrainDataItem";
+
 import TrainEpochResult from "../../value/train/TrainEpochResult";
 import TrainResult from "../../value/train/TrainResult";
 import BackPropagation from "./BackPropagation";
@@ -58,7 +59,7 @@ export default class Trainer {
             const output = network.calculate(item.input);
             const backProp = new BackPropagation(network, item.expectedOutput, costFunction);
             backProp.calculate(tunner);
-            result.processOutput(item.isCorrect(output));
+            result.processOutput(item.isCorrect(network.formattedOutput));
             result.cost += backProp.totalCost;
         }
         tunner.apply(network);

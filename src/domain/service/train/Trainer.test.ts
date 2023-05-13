@@ -2,11 +2,11 @@ import { describe, expect, test } from '@jest/globals';
 
 import Network from '../../value/Network';
 import TrainConfig from '../../value/train/TrainConfig';
-import { ExactTrainDataItem, RoundTrainDataItem, TrainDataItem } from '../../value/train/TrainDataItem';
 import Trainer from './Trainer';
 import QuadraticCostfunction from '../cost/QuadraticCostFunction';
 import { CliOutput } from '../../../infrastructure/cli/CliOutput';
 import LearningRate from '../../value/train/LearningRate';
+import TrainDataItem from '../../value/train/TrainDataItem';
 
 
 
@@ -23,8 +23,8 @@ describe("Trainer class", () => {
         const learningRate = new LearningRate(0, 1);
         const trainDataset: TrainDataItem[] = [];
 
-        trainDataset.push(new RoundTrainDataItem([1, 0], [0, 1]));
-        trainDataset.push(new RoundTrainDataItem([0, 1], [1, 0]));
+        trainDataset.push(new TrainDataItem([1, 0], [0, 1]));
+        trainDataset.push(new TrainDataItem([0, 1], [1, 0]));
 
         const trainConfig = TrainConfig
             .builder(network, trainDataset)

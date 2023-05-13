@@ -4,7 +4,8 @@ import CostFunction from "../../service/cost/CostFunction";
 import QuadraticCostfunction from "../../service/cost/QuadraticCostFunction";
 import LearningRate from "./LearningRate";
 import Network from "../Network";
-import { TrainDataItem } from "./TrainDataItem";
+import TrainDataItem from "./TrainDataItem";
+
 
 
 export default abstract class TrainConfig {

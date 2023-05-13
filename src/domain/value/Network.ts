@@ -2,14 +2,17 @@
 import ActivationFunction from "../service/activation/ActivationFunction";
 import SigmoidActivationFunction from "../service/activation/SigmoidActivationFunction";
 import Node from "./Node";
+import { NoOpFormatter, OutputFormatter } from "./OutputFormatter";
 
 export default class Network {
 
     private _input: number[] = [];
+    private _output: number[] = [];
 
     constructor(
         readonly layers: Node[][],
-        readonly activationFunction: ActivationFunction) { }
+        readonly activationFunction: ActivationFunction,
+        readonly outputFormatter: OutputFormatter) { }
 
 
     /**
@@ -23,7 +26,7 @@ export default class Network {
      * @param activationFunction activation function (defaults to sigmoid)
      * @returns Network
      */
-    public static initWithRandomWeights(layerSizes: number[], weightMin: number = 0.0, weightMax: number = 1.0, biasMin: number = 0.0, biasMax: number = 1.0, activationFunction: ActivationFunction = new SigmoidActivationFunction()): Network {
+    public static initWithRandomWeights(layerSizes: number[], weightMin: number = 0.0, weightMax: number = 1.0, biasMin: number = 0.0, biasMax: number = 1.0, activationFunction: ActivationFunction = new SigmoidActivationFunction(), outputFormatter: OutputFormatter = new NoOpFormatter()): Network {
         let layers: Node[][] = []
         for (let i = 0; i < layerSizes.length; i++) {
             layers[i] = [];
@@ -36,7 +39,7 @@ export default class Network {
             }
         }
 
-        return new Network(layers, activationFunction);
+        return new Network(layers, activationFunction, outputFormatter);
     }
 
     /**
@@ -44,7 +47,7 @@ export default class Network {
      * @param input number[]
      * @returns result number[]
      */
-    public calculate(input: number[]): number[] {
+    calculate(input: number[]): number[] {
         this._input = Object.assign([], input);
 
         if (input.length !== this.layers[0].length) {
@@ -53,8 +56,11 @@ export default class Network {
         for (let layer of this.layers) {
             input = this.calculateLayer(input, layer);
         }
-        return input;
+
+        this._output = input;
+        return this._output;
     }
+
 
     private calculateLayer(input: number[], layer: Node[]): number[] {
         let result = []
@@ -64,6 +70,7 @@ export default class Network {
         return result;
     }
 
+    get formattedOutput(): number[] { return this.outputFormatter.format(this._output); }
     /**
      * The input of the node [nodeIndex] in layer [layerIndex] as a function of the
      * activation of the node [prevNodeIndex] of the previous layer is:
