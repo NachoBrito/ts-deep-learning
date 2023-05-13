@@ -48,9 +48,15 @@ describe("NetworkTunner class", () => {
     test("apply", () => {
         const network = Network.initWithRandomWeights([2, 2])
         const weights: number[][][] = [];
+        const bias: number[][] = [];
         network.layers.forEach((nodes, layerIndex) => {
             weights.push([]);
-            nodes.forEach((node, nodeIndex) => { weights[layerIndex][nodeIndex] = Object.assign([], node.weights); })
+            bias.push([]);
+            nodes.forEach((node, nodeIndex) => {
+                weights[layerIndex][nodeIndex] = Object.assign([], node.weights);
+                bias[layerIndex][nodeIndex] = node.bias;
+            })
+            
         })
         const learningRate = new LearningRate(.5, .5);
         const tunner = new NetworkTunner(network, learningRate);
@@ -72,10 +78,10 @@ describe("NetworkTunner class", () => {
 
         tunner.apply(network);
 
-        expect(network.layers[0][0].bias).toBe(0 - (1 * learningRate.biasLearningRate));
-        expect(network.layers[0][1].bias).toBe(0 - (2 * learningRate.biasLearningRate));
-        expect(network.layers[1][0].bias).toBe(0 - (3 * learningRate.biasLearningRate));
-        expect(network.layers[1][1].bias).toBe(0 - (4 * learningRate.biasLearningRate));
+        expect(network.layers[0][0].bias).toBe(bias[0][0] - (1 * learningRate.biasLearningRate));
+        expect(network.layers[0][1].bias).toBe(bias[0][1] - (2 * learningRate.biasLearningRate));
+        expect(network.layers[1][0].bias).toBe(bias[1][0] - (3 * learningRate.biasLearningRate));
+        expect(network.layers[1][1].bias).toBe(bias[1][1] - (4 * learningRate.biasLearningRate));
 
         expect(network.layers[0][0].weights[0]).toBe(weights[0][0][0] - (1 * learningRate.weightsLearningRate));
         expect(network.layers[0][0].weights[1]).toBe(weights[0][0][1] - (2 * learningRate.weightsLearningRate));
