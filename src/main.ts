@@ -14,7 +14,7 @@ const network = Network.builder([2, 2])
     .withBiasLimits(-1, 1)
     .withOutputProcessor(rounder)
     .build();
-const epochs = 1000000;
+const epochs = 1000;
 const batches = 1;
 const output = new CliOutput();
 const cost = new QuadraticCostfunction();
@@ -37,3 +37,4 @@ const trainConfig = TrainConfig
 const trainer = new Trainer(trainConfig);
 
 const result = trainer.execute();
+

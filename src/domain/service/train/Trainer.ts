@@ -21,7 +21,7 @@ export default class Trainer {
 
             epochResult.calculateGain(lastCost);
             result.epochResults.push(epochResult);
-            this.config.output.write(`\rEpoch #${epochResult.epochNumber} total cost: ${epochResult.cost} (${epochResult.costGainPercent}%). Accuracy: ${epochResult.accuracy}% \t\t\t\t`);
+            this.config.output.write(`Epoch #${epochResult.epochNumber} total cost: ${epochResult.cost} (${epochResult.costGainPercent}%). Accuracy: ${epochResult.accuracy}% \n`);
             lastCost = epochResult.cost;
 
             if (Math.abs(epochResult.costGain) < this.config.gainThreshold) {
