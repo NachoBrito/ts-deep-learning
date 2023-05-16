@@ -98,7 +98,7 @@ class NetworkBuilder {
     private _weightMin: number = 0.0
     private _weightMax: number = 1.0;
     private _biasMin: number = 0.0;
-    private _biasMax: number = 1.0;
+    private _biasMax: number = 0.0;
     private _activationFunction: ActivationFunction = new SigmoidActivationFunction();
     private _outputProcessor: OutputProcessor = new NoOpFormatter()
 

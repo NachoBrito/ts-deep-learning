@@ -10,15 +10,14 @@ import { CliOutput } from "./infrastructure/cli/CliOutput";
 
 const rounder = new OutputRounder();
 const network = Network.builder([2, 2])
-    .withWeightLimits(-1, 1)
-    .withBiasLimits(-1, 1)
+    .withWeightLimits(-.5, .5)
     .withOutputProcessor(rounder)
     .build();
 const epochs = 1000;
 const batches = 1;
 const output = new CliOutput();
 const cost = new QuadraticCostfunction();
-const learningRate = new LearningRate(0, 1);
+const learningRate = new LearningRate(.5, .2);
 const trainDataset: TrainDataItem[] = [];
 
 trainDataset.push(new TrainDataItem([1, 0], [0, 1]));

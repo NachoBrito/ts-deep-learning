@@ -1,13 +1,37 @@
 # Neural Network written in Typescript 
 
-I read Douglas Reiser's article and decided to replicate the project doing my own implementation of a Deep Neural Network with Typescript.
+This repository contains the code for my [article about Deep Learning](https://www.nachobrito.es/es/sideprojects/ts-deeplearning/).
 
-Obviously the oerformance is terrible compared to other languages, but the purpose of this project was to experiment and gain a deeper understanding of the internal work of Neutral Networks.
+You can use this code to experiment with Neural Networks, using [main.ts](src/main.ts) as an example:
 
-If you're new to this topics, I recommend this resources to understand the ideas behind them:
+```typescript
 
-- https://www.youtube.com/watch?v=4RixMPF4xis
+const rounder = new OutputRounder();
+const network = Network.builder([2, 2])
+    .withWeightLimits(-.5, .5)
+    .withOutputProcessor(rounder)
+    .build();
+const epochs = 1000;
+const batches = 1;
+const output = new CliOutput();
+const cost = new QuadraticCostfunction();
+const learningRate = new LearningRate(.5, .2);
+const trainDataset: TrainDataItem[] = [];
 
-- https://medium.com/@douglasreiser/building-a-deep-neural-network-from-scratch-in-typescript-9028903c15f1
+trainDataset.push(new TrainDataItem([1, 0], [0, 1]));
+trainDataset.push(new TrainDataItem([0, 1], [1, 0]));
 
-- https://www.youtube.com/watch?v=Ilg3gGewQ5U&index=3&list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi
+const trainConfig = TrainConfig
+    .builder(network, trainDataset)
+    .withLearningRate(learningRate)
+    .withEpochs(epochs)
+    .withBatchCount(batches)
+    .withCostFunction(cost)
+    .withOutput(output)
+    .withGainThreshold(0)
+    .build();
+
+const trainer = new Trainer(trainConfig);
+
+const result = trainer.execute();
+```
