@@ -2,7 +2,7 @@
 
 This repository contains the code for my [article about Deep Learning](https://www.nachobrito.es/es/sideprojects/ts-deeplearning/).
 
-You can use this code to experiment with Neural Networks, using [main.ts](src/main.ts) as an guide. For example, if you want to train a network that will flip a vector components (return [1,0] for the input [0,1] and vice versa), this code will do:
+You can use this code to experiment with Neural Networks, using [main.ts](src/main.ts) as a guide. For example, if you want to train a network that will flip a vector components (return [1,0] for the input [0,1] and vice versa), this code will do:
 
 ```typescript
 
